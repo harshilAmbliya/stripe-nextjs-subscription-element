@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 type Props = {};
 const page = (props: Props) => {
@@ -9,11 +9,20 @@ const page = (props: Props) => {
       redirect: false,
       callbackUrl: "/",
     });
-    console.log(res);
+    // console.log(res);
   };
+
+  const handleSignOut =async () => {
+    const res = await signOut({
+      redirect:false,
+      callbackUrl:"/"
+    });
+  };
+
   return (
     <div>
       <button onClick={handleSignIn}>Login</button>
+      <button onClick={handleSignOut}>Logout</button>
     </div>
   );
 };

@@ -6,5 +6,5 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   const prices = await stripe.prices.list({
     limit: 3,
   });
-  return NextResponse.json(prices.data, { status: 200 });
+  return NextResponse.json(prices.data.reverse(), { status: 200 });
 };
