@@ -1,33 +1,68 @@
-"use client"
+"use client";
 
-import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
-import { useState } from "react"
+import {
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
-type Props = {}
+import { useState } from "react";
+
+type Props = {};
 const CheckoutForm = (props: Props) => {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [message, setMessage] = useState("")
+  const stripe = useStripe();
+  const elements = useElements();
+  const [message, setMessage] = useState("");
 
   const handlePay = async () => {
     if (!stripe || !elements) {
-      return
+      return;
     }
+
+    const Gelement = elements.create("expressCheckout", {
+      wallets: {
+        applePay: "always",
+        googlePay: "always",
+      },
+    });
+
+    const GOOGLEPAYELEMENT = elements.getElement("expressCheckout");
+    GOOGLEPAYELEMENT?.update({
+      layout: { overflow: "auto" },
+    });
+
+    GOOGLEPAYELEMENT?.on("confirm", async () => {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: "https://example.com",
+        },
+      });
+    });
+
+    // const res = await stripe.confirmPayment({
+    //   elements ,
+    //   redirect:"always",
+    //   confirmParams:{
+    //     return_url:`${window.location.origin}/completion`,
+    //     receipt_email:"harshil2@gmail.com"
+    //   }
+    // })
 
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
+
       redirect: "if_required",
       confirmParams: {
         receipt_email: "harshilambliya15@gmail.com",
         return_url: `${window.location.origin}/completion`,
       },
-    })
-
+    });
+    //
     setMessage(paymentIntent?.status as string);
 
-
-    console.log(message,paymentIntent?.status)
-  }
+    console.log(message, paymentIntent?.status);
+  };
 
   return (
     <>
@@ -52,6 +87,6 @@ const CheckoutForm = (props: Props) => {
         </div>
       </form>
     </>
-  )
-}
-export default CheckoutForm
+  );
+};
+export default CheckoutForm;

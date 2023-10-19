@@ -9,6 +9,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     name,
     email,
     payment_method: "pm_card_visa",
+    
   })
 
   return NextResponse.json(
